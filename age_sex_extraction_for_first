@@ -60,7 +60,7 @@ sex_extraction(text):
     text = re.sub('  ', '', text.lower())
     
     # find all gender expressions
-    sex = re.compile(r'\b(he|male|man|boy|she|female|woman|girl)\b').findall(t)
+    sex = re.compile(r'\b(he|male|man|boy|she|female|woman|girl)\b').findall(text)
     
     # choose the first gender occurrence
     if sex == []:
