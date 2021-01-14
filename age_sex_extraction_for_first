@@ -1,0 +1,50 @@
+def age_extraction(text):
+    # simple preprocessing
+    text = re.sub('[^ a-zA-Z0-9]', '', text)
+    text = re.sub('  ', '', text.lower())
+        
+    # find all age expressions in text
+    age = (re.compile('([0-9a-z]*) *(years*|yr) *old').findall(text)) or \
+            (re.compile('([0-9]*) *years* *(male|female|man|woman)').findall(text)) or \
+            (re.compile('([0-9a-z]*) *(months*) *old').findall(text)) or \
+            (re.compile('([0-9a-z]*) *(hours*) *old').findall(text))           
+            
+    # choose the first age occurrence
+    if len(age)>0:
+        age = age[0]
+    else:
+        age = None
+               
+    # years old/ months old/ hours old
+    if age[1] in ['year', 'years', 'yr']:
+        age[1] = 'Y'
+    elif age[1] in ['month', 'months']:
+        age[1] = 'M'
+    elif age[1] in ['hour', 'hours']:
+        age[1] = 'H'
+                
+    # A tuple or None will be returned
+    return age
+    
+    
+    
+    
+sex_extraction(text):
+    # simple preprocessing
+    text = re.sub('[^ a-zA-Z0-9]', '', text)
+    text = re.sub('  ', '', text.lower())
+    
+    # find all gender expressions
+    sex = re.compile(r'\b(he|male|man|boy|she|female|woman|girl)\b').findall(t)
+    
+    # choose the first gender occurrence
+    if sex == []:
+        sex =None
+    else:
+        if sex[0] in ['he', 'male', 'man', 'boy']:
+            sex = 'MALE'
+        if sex[0] in ['she', 'female', 'woman', 'girl']:
+            sex = 'FEMALE'
+    
+    # A string or None will be returned        
+    return sex
