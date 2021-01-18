@@ -1,0 +1,19 @@
+def medical_case(df_snomed, df_pubmed):
+
+    result = [{"title":df_pubmed.title[i],
+                 'patient':{
+                             "age":df_pubmed.age[i],
+                             'sex':df_pubmed.sex[i]
+                             },
+                 'commonSpecialities':[46,2],
+                 'parts': df_pubmed.parts[i],
+                 'reference':{
+                              'title': df_pubmed.title[i],
+                              'author': for_author_list(df_pubmed.authors_edited[i]),
+                              'link': 'https://pubmed.ncbi.nlm.nih.gov/'+ df_pubmed.pmid[i]
+                              },
+                 'content':[{'type':'paragraph',
+                                           'children': snomed_mapping(df_snomed, df_pubmed.abstract_edited[i])}]
+                 } for i in range(len(df_pubmed))]
+    
+    return result
