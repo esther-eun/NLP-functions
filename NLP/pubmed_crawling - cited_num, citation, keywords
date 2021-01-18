@@ -15,7 +15,7 @@ driver=webdriver.Chrome(chrome_driver_path)
 
 
 # str pmid
-pmid = 
+pmid = ''
 driver.get('http://www.ncbi.nlm.nih.gov/pubmed/'+pmid)
 
 
