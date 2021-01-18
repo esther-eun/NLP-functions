@@ -1,0 +1,70 @@
+import json
+from selenium import webdriver
+import re
+import pandas as pd
+import time
+from time import sleep
+
+
+
+# Chrome Driver path
+chrome_driver_path = ''
+
+
+driver=webdriver.Chrome(chrome_driver_path)
+
+
+# str pmid
+pmid = 
+driver.get('http://www.ncbi.nlm.nih.gov/pubmed/'+pmid)
+
+
+
+# cited_num crawling
+amount = driver.find_elements_by_class_name('amount')
+amount_list = [i.text for i in amount]
+if amount_list == []:
+    cited_num = '0'
+elif len(amount_list) == 1:
+    cited_num = str(int(amount_list[0]))
+else:
+    cited_num = 'Error'
+    
+    
+    
+# MLA format citation
+driver.find_element_by_css_selector(
+    "#article-page > aside > div > div.actions-buttons.sidebar > div > button.citation-button.citation-dialog-trigger"
+    ).click()
+time.sleep(2)
+try:
+    driver.find_element_by_xpath(
+            '//*[@id="article-page"]/div[1]/div/div[2]/div[2]/div/select/option[3]'
+                                    ).click()
+except:
+    try:
+        driver.find_element_by_xpath(
+            '//*[@id="article-page"]/div[2]/div/div[2]/div[2]/div/select/option[3]'
+                                    ).click()
+    except:
+        pass
+citation_text = driver.find_elements_by_class_name('citation-text')
+cite = [i.text for i in citation_text][-1]
+
+
+
+# Keywords
+abstract = driver.find_elements_by_class_name('abstract')
+text = [i.text for i in abstract][-1]
+last_text = text.split('\n')[-1]
+if last_text[:8] == 'Keywords':
+    keywords = re.sub('[\.]', '',last_text)
+    keywords = keywords[10:].split('; ')
+else:
+    keywords = []
+    
+    
+    
+driver.close()
+
+
