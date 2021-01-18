@@ -54,7 +54,7 @@ def age_extraction(text):
     
     
     
-sex_extraction(text):
+def sex_extraction(text):
     # simple preprocessing
     text = re.sub('[^ a-zA-Z0-9]', '', text)
     text = re.sub('  ', '', text.lower())
