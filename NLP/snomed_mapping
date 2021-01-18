@@ -1,0 +1,64 @@
+import pandas as pd
+import re
+
+
+def snomed_mapping(df_snomed, abstract):  
+    text = ' '+abstract+' '
+    text_processed = re.sub('[^ a-zA-Z0-9]', ' ', text.lower())
+    temp = df_snomed[df_snomed['term_processed'].apply(lambda x: x in text_processed)]
+    
+    result = []
+    for index, row in temp.iterrows():
+        for m in re.finditer(row.term_processed, text_processed):
+            result.append(
+                {"type":"term",
+                 "children": [{ "text": "" }],
+                 "id": str(int(row.id)),
+                 "conceptId": str(int(row.conceptId)),
+                 "term": row.term, 
+                 "termType": row.type,
+                 "start": m.start(),
+                 "end" : m.end(),
+                 "finding": row.finding,
+                 "caseSignificance":row.caseSignificanceId})
+
+    result = sorted(result, key=lambda x:(x['start'], x['end']))
+    
+    
+    # 단어 중복시 짧은 단어 제거
+    i = 0
+    while i <len(result)-1:
+        try:
+            if result[i]['start'] == result[i+1]['start'] and result[i]['end'] < result[i+1]['end']:
+                while result[i]['start'] == result[i+1]['start'] and result[i]['end'] < result[i+1]['end']:
+                        result.remove(result[i])
+
+            if result[i]['start'] < result[i+1]['start'] and result[i]['end'] >= result[i+1]['end']:
+                while result[i]['start'] < result[i+1]['start'] and result[i]['end'] >= result[i+1]['end']:
+                    result.remove(result[i+1])
+        except:
+            pass
+        i += 1
+    
+    
+    # 텍스트 추가 & term 인덱스 제거
+    term_text = []
+    n = 0
+    for i in result:
+        sub_text = text[n:i['start']+1] 
+        term_text.append({'text':sub_text})
+        n = i['end']-1
+        del i['start']
+        del i['end']
+    term_text.append({'text':text[n:-1]})
+    
+    
+    # content list
+    content = []   
+    for i in range(len(result)):
+        content.append(term_text[i])
+        content.append(result[i])
+    content.append(term_text[-1])
+    
+
+    return content
