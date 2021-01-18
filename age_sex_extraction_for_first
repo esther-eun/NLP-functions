@@ -26,11 +26,12 @@ def age_extraction(text):
     text = re.sub('  ', '', text.lower())
         
     # find all age expressions in text
-    age = (re.compile('([0-9a-z]*) *(years*|yr) *old').findall(text)) or \
-            (re.compile('([0-9]*) *years* *(male|female|man|woman)').findall(text)) or \
-            (re.compile('([0-9a-z]*) *(months*) *old').findall(text)) or \
-            (re.compile('([0-9a-z]*) *(hours*) *old').findall(text))           
-            
+    age = (re.compile('([0-9]*|[a-z]*) *(years*|yr) *old').findall(text)) or \
+        (re.compile('([0-9]*) *years* *(male|female|man|woman)').findall(text)) or \
+        (re.compile('([0-9]*|[a-z]*) *(months*) *old').findall(text)) or \
+        (re.compile('([0-9]*|[a-z]*) *(hours*) *old').findall(text)) or \
+        (re.compile('([0-9[*|[a-z]*) *(days*) *old').findall(text))           
+
     # choose the first age occurrence
     if len(age)>0:
         age = list(age[0])
